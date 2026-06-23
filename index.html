@@ -1,12 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Bienvenido</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            min-height: 100vh;
+        }
+
+        .hero-card {
+            max-width: 500px;
+            border-radius: 20px;
+        }
+    </style>
 </head>
 <body>
-    
-    s
+
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="card hero-card shadow-lg p-5 text-center">
+        <h1 class="mb-3">Bienvenido</h1>
+        <p class="text-muted mb-4">
+            Accede a tu cuenta o crea una nueva para continuar.
+        </p>
+
+        <div class="d-grid gap-3">
+            <a href="login.html" class="btn btn-primary btn-lg">
+                Iniciar Sesión
+            </a>
+
+            <a href="register.html" class="btn btn-outline-success btn-lg">
+                Registrarse
+            </a>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
