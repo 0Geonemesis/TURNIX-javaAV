@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesion</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <!-- link iconos de cdjs -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- link del bost -->
@@ -31,48 +31,50 @@
 </div>
 </nav>
 
-
-
-    
-    <div class="card-box">
-        <h3>Iniciar Sesion</h3>
-        <form id="formLogin" novalidate>
-            <div class="mb-3 grupo">
-            <!-- descrivimos el campo -->
-                <label for="email" class="form-label">Correo electronico</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                    <input type="email" id="correo"  placeholder="U123556789@utp.edu.pe" required>
-                    <!-- muestra el msj de error -->
-                    <div class="error" id="errorCorreo"></div>
-                </div>
+<div class="card-box container mt-5" style="max-width: 450px;">
+    <h3>Iniciar Sesión</h3>
+    <form id="formLogin" novalidate>
+        <div class="mb-3 grupo">
+            <label for="correo" class="form-label">Correo electrónico</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                <input type="email" id="correo" class="form-control" placeholder="U12345678@utp.edu.pe" required>
             </div>
+            <div class="error text-danger small mt-1" id="errorCorreo"></div>
+        </div>
 
-
-
-            <div class="mb-3 grupo">
-                <label for="password" class="form-label">Contraseña</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                    <input type="password" id="password" placeholder="******" required>
-                    <div class="error" id="errorPassword"></div>
-                </div>
+        <div class="mb-3 grupo">
+            <label for="password" class="form-label">Contraseña (PIN de 6 dígitos)</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                <input type="password" id="password" class="form-control" placeholder="******" required>
             </div>
-            <!-- botones del cuadrado ese -->
-            <button type="submit" class="btn-main">Entrar</button>
-            <!-- carga los usuarios de la api -->
-            <button type="button" id="btnCargar" onclick="cargarUsuarios()" disabled>Cargar Usuario</button>
-            <ul id="lista"></ul>
-        </form>
+            <div class="error text-danger small mt-1" id="errorPassword"></div>
+        </div>
 
-        <p class="text-center mt-3" style="font-size: 14px;">
-            no tienes cuenta =? <a href="register.html">Registrate</a>
-        </p>
+        <button type="submit" class="btn btn-primary w-100 mb-2">Entrar</button>
+        <button type="button" id="btnCargar" class="btn btn-secondary w-100" onclick="cargarUsuarios()" disabled>Cargar Usuarios desde API</button>
+    </form>
 
+    <p class="text-center mt-3" style="font-size: 14px;">
+        ¿No tienes cuenta? <a href="register.html">Regístrate</a>
+    </p>
+</div>
+
+<div class="container mt-4">
+    <div id="contenedor" class="row g-3"></div>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toastLogin" class="toast align-items-center text-bg-success border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">
+                ✔ ¡Bienvenido al sistema!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
     </div>
-
-
-
+</div>
 
 
     <!-- modal de bostrap -->
