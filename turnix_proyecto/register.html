@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnix | Crear cuenta</title>
+
+    <!-- Mismo CSS para mantener una identidad visual consistente -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+
+    <main class="auth-container">
+        <section class="auth-card">
+
+            <div class="auth-header">
+                <div class="logo-circle">T</div>
+                <h1>Turnix</h1>
+                <p>Crea tu cuenta y empieza a organizar tus citas y turnos.</p>
+            </div>
+
+            <!-- 
+                Formulario de registro.
+                Aquí guardaremos nuevos usuarios en localStorage.
+            -->
+            <form id="registerForm" class="auth-form">
+                <h2>Crear cuenta</h2>
+
+                <div class="form-group">
+                    <label for="fullName">Nombre completo</label>
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        placeholder="Ejemplo: Yhon Alexander"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">Correo electrónico</label>
+                    <input 
+                        type="email" 
+                        id="registerEmail" 
+                        placeholder="ejemplo@correo.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="registerPassword" 
+                        placeholder="Mínimo 6 caracteres"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar contraseña</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        placeholder="Vuelve a escribir tu contraseña"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="userType">Tipo de usuario</label>
+                    <select id="userType" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="cliente">Cliente</option>
+                        <option value="negocio">Negocio</option>
+                    </select>
+                </div>
+
+                <p id="registerMessage" class="form-message"></p>
+
+                <button type="submit" class="btn btn-primary">
+                    Registrarse
+                </button>
+
+                <div class="auth-links">
+                    <a href="index.html">Ya tengo una cuenta</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="js/register.js"></script>
+</body>
+</html>

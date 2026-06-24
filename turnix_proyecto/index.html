@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnix | Iniciar sesión</title>
+
+    <!-- Aquí conectamos el archivo de estilos global del proyecto -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+
+    <!-- 
+        Esta sección envuelve todo el login.
+        La idea es tener una "tarjeta" centrada y limpia.
+    -->
+    <main class="auth-container">
+        <section class="auth-card">
+
+            <!-- Bloque de marca / identidad visual -->
+            <div class="auth-header">
+                <div class="logo-circle">T</div>
+                <h1>Turnix</h1>
+                <p>Gestiona citas, filas y clientes sin perder el control.</p>
+            </div>
+
+            <!-- 
+                Formulario de inicio de sesión.
+                El id nos sirve para capturarlo desde login.js
+            -->
+            <form id="loginForm" class="auth-form">
+                <h2>Bienvenido de nuevo</h2>
+
+                <div class="form-group">
+                    <label for="loginEmail">Correo electrónico</label>
+                    <input 
+                        type="email" 
+                        id="loginEmail" 
+                        placeholder="ejemplo@turnix.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="loginPassword" 
+                        placeholder="Ingresa tu contraseña"
+                        required
+                    >
+                </div>
+
+                <!-- 
+                    Este bloque mostrará errores o mensajes de éxito.
+                    Lo llenaremos dinámicamente con JavaScript.
+                -->
+                <p id="loginMessage" class="form-message"></p>
+
+                <button type="submit" class="btn btn-primary">
+                    Iniciar sesión
+                </button>
+
+                <div class="auth-links">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                    <a href="register.html">Crear cuenta</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Al final del body cargamos la lógica del login -->
+    <script src="js/login.js"></script>
+</body>
+</html>

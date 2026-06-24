@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnix | Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- 
+        Todo el dashboard vive dentro de este contenedor principal.
+        Lo dividimos en:
+        1) barra lateral
+        2) contenido principal
+    -->
+    <div class="dashboard-layout">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-circle small">T</div>
+                <div>
+                    <h2>Turnix</h2>
+                    <p>Panel principal</p>
+                </div>
+            </div>
+
+            <!-- 
+                Menú lateral.
+                Más adelante estos botones pueden abrir módulos reales:
+                clientes, citas, filas, reportes, etc.
+            -->
+            <nav class="sidebar-menu">
+                <a href="#" class="menu-item active">Dashboard</a>
+                <a href="#" class="menu-item">Clientes</a>
+                <a href="#" class="menu-item">Citas</a>
+                <a href="#" class="menu-item">Filas</a>
+                <a href="#" class="menu-item">Reportes</a>
+                <a href="#" class="menu-item">Perfil</a>
+
+                <!-- Este botón sí tendrá comportamiento real -->
+                <button id="logoutBtn" class="menu-item logout-btn">
+                    Cerrar sesión
+                </button>
+            </nav>
+        </aside>
+
+        <!-- ===== CONTENIDO PRINCIPAL ===== -->
+        <main class="main-content">
+
+            <!-- Encabezado del dashboard -->
+            <header class="topbar">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p id="welcomeText">Bienvenido a Turnix</p>
+                </div>
+
+                <div class="topbar-user">
+                    <span id="userBadge">Usuario</span>
+                </div>
+            </header>
+
+            <!-- ===== TARJETAS KPI ===== -->
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <h3>Total Clientes</h3>
+                    <p id="kpiClients">0</p>
+                    <span>Clientes registrados en el sistema</span>
+                </article>
+
+                <article class="kpi-card">
+                    <h3>Citas del Día</h3>
+                    <p id="kpiAppointments">0</p>
+                    <span>Reservas programadas para hoy</span>
+                </article>
+
+                <article class="kpi-card">
+                    <h3>Turnos Activos</h3>
+                    <p id="kpiTurns">0</p>
+                    <span>Personas actualmente en espera</span>
+                </article>
+
+                <article class="kpi-card">
+                    <h3>Atención Promedio</h3>
+                    <p id="kpiAverage">0 min</p>
+                    <span>Tiempo medio de atención por cliente</span>
+                </article>
+            </section>
+
+            <!-- ===== ZONA DE GRÁFICO + TABLA ===== -->
+            <section class="dashboard-grid">
+                
+                <!-- 
+                    Por ahora este gráfico será una maqueta visual con barras.
+                    Más adelante podemos cambiarlo por Chart.js sin problema.
+                -->
+                <article class="panel-card">
+                    <div class="panel-header">
+                        <h2>Rendimiento semanal</h2>
+                        <span>Vista general</span>
+                    </div>
+
+                    <div class="fake-chart">
+                        <div class="bar" style="height: 55%;">
+                            <span>Lun</span>
+                        </div>
+                        <div class="bar" style="height: 72%;">
+                            <span>Mar</span>
+                        </div>
+                        <div class="bar" style="height: 45%;">
+                            <span>Mié</span>
+                        </div>
+                        <div class="bar" style="height: 90%;">
+                            <span>Jue</span>
+                        </div>
+                        <div class="bar" style="height: 68%;">
+                            <span>Vie</span>
+                        </div>
+                        <div class="bar" style="height: 50%;">
+                            <span>Sáb</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Tabla de últimas citas -->
+                <article class="panel-card">
+                    <div class="panel-header">
+                        <h2>Últimas citas</h2>
+                        <span>Actividad reciente</span>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentsTableBody">
+                                <!-- dashboard.js inyectará las filas aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
