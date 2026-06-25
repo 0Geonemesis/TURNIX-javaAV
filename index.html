@@ -3,43 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido</title>
+    <title>Turnix | Iniciar sesión</title>
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background: linear-gradient(135deg, #0d6efd, #6610f2);
-            min-height: 100vh;
-        }
-
-        .hero-card {
-            max-width: 500px;
-            border-radius: 20px;
-        }
-    </style>
+    <!-- Aquí conectamos el archivo de estilos global del proyecto -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="auth-body">
 
-<div class="container vh-100 d-flex justify-content-center align-items-center">
-    <div class="card hero-card shadow-lg p-5 text-center">
-        <h1 class="mb-3">Bienvenido</h1>
-        <p class="text-muted mb-4">
-            Accede a tu cuenta o crea una nueva para continuar.
-        </p>
+    <!-- 
+        Esta sección envuelve todo el login.
+        La idea es tener una "tarjeta" centrada y limpia.
+    -->
+    <main class="auth-container">
+        <section class="auth-card">
 
-        <div class="d-grid gap-3">
-            <a href="login.html" class="btn btn-primary btn-lg">
-                Iniciar Sesión
-            </a>
+            <!-- Bloque de marca / identidad visual -->
+            <div class="auth-header">
+                <div class="logo-circle">T</div>
+                <h1>Turnix</h1>
+                <p>Gestiona citas, filas y clientes sin perder el control.</p>
+            </div>
 
-            <a href="register.html" class="btn btn-outline-success btn-lg">
-                Registrarse
-            </a>
-        </div>
-    </div>
-</div>
+            <!-- 
+                Formulario de inicio de sesión.
+                El id nos sirve para capturarlo desde login.js
+            -->
+            <form id="loginForm" class="auth-form">
+                <h2>Bienvenido de nuevo</h2>
 
+                <div class="form-group">
+                    <label for="loginEmail">Correo electrónico</label>
+                    <input 
+                        type="email" 
+                        id="loginEmail" 
+                        placeholder="ejemplo@turnix.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="loginPassword" 
+                        placeholder="Ingresa tu contraseña"
+                        required
+                    >
+                </div>
+
+                <!-- 
+                    Este bloque mostrará errores o mensajes de éxito.
+                    Lo llenaremos dinámicamente con JavaScript.
+                -->
+                <p id="loginMessage" class="form-message"></p>
+
+                <button type="submit" class="btn btn-primary">
+                    Iniciar sesión
+                </button>
+
+                <div class="auth-links">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                    <a href="register.html">Crear cuenta</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Al final del body cargamos la lógica del login -->
+    <script src="js/login.js"></script>
 </body>
 </html>
