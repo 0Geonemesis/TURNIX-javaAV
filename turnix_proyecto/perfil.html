@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnix | Perfil</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+
+        <!-- =========================
+             MENÚ LATERAL
+             ========================= -->
+        <aside class="sidebar">
+            <div>
+                <div class="sidebar-brand">
+                    <div class="logo-circle small">T</div>
+                    <div>
+                        <h2>Turnix</h2>
+                        <p>Panel principal</p>
+                    </div>
+                </div>
+
+                <nav class="sidebar-menu">
+                    <a href="dashboard.html" class="menu-item">Dashboard</a>
+                    <a href="clientes.html" class="menu-item">Clientes</a>
+                    <a href="citas.html" class="menu-item">Citas</a>
+                    <a href="filas.html" class="menu-item">Filas</a>
+                    <a href="reportes.html" class="menu-item">Reportes</a>
+                    <a href="perfil.html" class="menu-item active">Perfil</a>
+                    <button id="logoutBtn" class="menu-item logout-btn">Cerrar sesión</button>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- =========================
+             CONTENIDO PRINCIPAL
+             ========================= -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <h1>Mi perfil</h1>
+                    <p>Desde aquí puedes revisar y actualizar los datos de tu cuenta en Turnix.</p>
+                </div>
+
+                <div class="topbar-user">
+                    <span id="userBadge">Usuario</span>
+                </div>
+            </header>
+
+            <section class="profile-grid">
+
+                <!-- Tarjeta resumen del usuario -->
+                <div class="panel-card profile-summary-card">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+
+                    <h2 id="profileNameText">Usuario</h2>
+                    <p id="profileEmailText">correo@turnix.com</p>
+
+                    <div class="profile-meta-list">
+                        <div class="profile-meta-item">
+                            <span>Tipo de cuenta</span>
+                            <strong id="profileTypeText">Negocio</strong>
+                        </div>
+
+                        <div class="profile-meta-item">
+                            <span>Fecha de registro</span>
+                            <strong id="profileCreatedAtText">Sin fecha</strong>
+                        </div>
+
+                        <div class="profile-meta-item">
+                            <span>ID de usuario</span>
+                            <strong id="profileIdText">-</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario editable -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h2>Editar perfil</h2>
+                        <span>Los cambios se guardan en el sistema actual</span>
+                    </div>
+
+                    <form id="profileForm" class="profile-form">
+                        <input type="hidden" id="profileUserId">
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="profileName">Nombre completo</label>
+                                <input type="text" id="profileName" placeholder="Ingresa tu nombre" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileEmail">Correo electrónico</label>
+                                <input type="email" id="profileEmail" placeholder="Ingresa tu correo" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileUserType">Tipo de cuenta</label>
+                                <select id="profileUserType" required>
+                                    <option value="negocio">Negocio</option>
+                                    <option value="cliente">Cliente</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileCreatedAt">Fecha de creación</label>
+                                <input type="text" id="profileCreatedAt" disabled>
+                            </div>
+                        </div>
+
+                        <hr class="profile-divider">
+
+                        <div class="panel-header profile-password-header">
+                            <h2>Cambiar contraseña</h2>
+                            <span>Solo completa estos campos si deseas actualizarla</span>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="profileCurrentPassword">Contraseña actual</label>
+                                <input type="password" id="profileCurrentPassword" placeholder="Escribe tu contraseña actual">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileNewPassword">Nueva contraseña</label>
+                                <input type="password" id="profileNewPassword" placeholder="Escribe una nueva contraseña">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profileConfirmPassword">Confirmar nueva contraseña</label>
+                                <input type="password" id="profileConfirmPassword" placeholder="Repite la nueva contraseña">
+                            </div>
+                        </div>
+
+                        <p id="profileFormMessage" class="form-message"></p>
+
+                        <div class="profile-actions">
+                            <button type="button" id="resetProfileBtn" class="btn-secondary">
+                                Revertir cambios
+                            </button>
+
+                            <button type="submit" class="btn btn-primary">
+                                Guardar cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <script src="js/perfil.js"></script>
+</body>
+</html>
