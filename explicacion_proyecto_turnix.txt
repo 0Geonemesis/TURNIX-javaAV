@@ -1,0 +1,758 @@
+EXPLICACION DEL PROYECTO TURNIX
+===============================
+
+INTRODUCCION
+------------
+
+Hola, este proyecto se llama Turnix. Es un sistema de gestion de filas, citas y clientes para pequenos negocios.
+
+El proyecto esta dividido en dos partes principales:
+
+TURNIX-javaAV/
+  frontend/
+  backend/
+
+La carpeta frontend contiene todo lo que ve el usuario en la pagina web. Esta hecho con React + Vite.
+
+La carpeta backend contiene la API. Esta hecha con Node.js + Express y se conecta a MySQL.
+
+
+PAGINA PRINCIPAL
+----------------
+
+La pagina principal, o index, ya no se modifica desde index.html como antes. Ahora usamos React.
+
+El archivo base del navegador esta aqui:
+
+frontend/index.html
+
+Fragmento:
+
+<div id="root"></div>
+
+Ese div es donde React carga toda la aplicacion.
+
+React empieza desde este archivo:
+
+frontend/src/main.jsx
+
+Fragmento:
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <AppRouter />
+  </React.StrictMode>
+);
+
+Esto significa que React toma el elemento root y dentro coloca todo el proyecto.
+
+La pagina de inicio se modifica aqui:
+
+frontend/src/pages/HomePage.jsx
+
+Fragmento:
+
+export default function HomePage() {
+  return (
+    <main>
+      <section className="home-hero">
+        <h1>Turnix</h1>
+        <p>
+          Gestiona filas, citas, clientes y reportes desde una base preparada para crecer.
+        </p>
+      </section>
+    </main>
+  );
+}
+
+Si queremos cambiar el texto principal de la pagina publica, lo hacemos en HomePage.jsx.
+
+
+RUTAS DEL PROYECTO
+------------------
+
+Las rutas se controlan con React Router.
+
+El archivo esta aqui:
+
+frontend/src/router/AppRouter.jsx
+
+Fragmento:
+
+<Route path="/" element={<HomePage />} />
+<Route path="/login" element={<LoginPage />} />
+<Route path="/registro" element={<RegisterPage />} />
+<Route path="/dashboard" element={<DashboardPage />} />
+<Route path="/negocio" element={<BusinessPage />} />
+
+Esto quiere decir:
+
+/           muestra la pagina de inicio
+/login      muestra el login
+/registro   muestra el registro
+/dashboard  muestra el dashboard
+/negocio    muestra la gestion de clientes, citas, turnos y reportes
+
+Si queremos agregar una nueva pantalla, primero creamos un archivo en:
+
+frontend/src/pages/
+
+Y despues lo enlazamos en AppRouter.jsx.
+
+
+DISENO VISUAL
+-------------
+
+Los estilos estan en:
+
+frontend/src/styles/app.css
+
+Por ejemplo, el color principal del sistema esta aqui:
+
+:root {
+  --turnix-primary: #2563eb;
+}
+
+Si queremos cambiar el color azul de Turnix, modificamos esa variable.
+
+Tambien usamos Bootstrap. Por eso hay clases como:
+
+className="btn btn-primary"
+className="form-control"
+className="table table-hover"
+
+Bootstrap se importa aqui:
+
+frontend/src/main.jsx
+
+Fragmento:
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
+
+LAYOUT PUBLICO
+--------------
+
+El menu publico esta aqui:
+
+frontend/src/layouts/PublicLayout.jsx
+
+Fragmento:
+
+<Link className="navbar-brand fw-bold text-primary" to="/">
+  Turnix
+</Link>
+
+Este layout se usa para:
+
+Inicio
+Login
+Registro
+
+Si queremos cambiar el menu superior, modificamos PublicLayout.jsx.
+
+
+LAYOUT INTERNO
+--------------
+
+El menu lateral del dashboard esta aqui:
+
+frontend/src/layouts/DashboardLayout.jsx
+
+Fragmento:
+
+<NavLink to="/dashboard">Dashboard</NavLink>
+<NavLink to="/negocio">Gestion publica</NavLink>
+<NavLink to="/">Inicio publico</NavLink>
+
+Este layout se usa para las paginas internas:
+
+/dashboard
+/negocio
+
+
+REGISTRO DE USUARIO
+-------------------
+
+El formulario de registro esta aqui:
+
+frontend/src/pages/RegisterPage.jsx
+
+Fragmento:
+
+const [form, setForm] = useState({
+  fullName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  role: ""
+});
+
+Aqui usamos useState, que sirve para guardar temporalmente lo que el usuario escribe en el formulario.
+
+Cuando el usuario escribe, se ejecuta:
+
+function handleChange(event) {
+  setForm({ ...form, [event.target.name]: event.target.value });
+}
+
+Cuando el usuario presiona Registrarse, se ejecuta:
+
+async function handleSubmit(event) {
+  event.preventDefault();
+
+  await registerUser({
+    fullName: form.fullName,
+    email: form.email,
+    password: form.password,
+    role: form.role
+  });
+}
+
+Esa funcion llama a registerUser, que esta aqui:
+
+frontend/src/api/authService.js
+
+Fragmento:
+
+export function registerUser(payload) {
+  return apiClient.post("/auth/register", payload);
+}
+
+Eso envia los datos al backend, a esta ruta:
+
+POST http://localhost:4000/api/auth/register
+
+En el backend, la ruta esta aqui:
+
+backend/src/routes/auth.routes.js
+
+Fragmento:
+
+router.post("/register", register);
+
+Esa ruta llama al controlador:
+
+backend/src/controllers/auth.controller.js
+
+Fragmento:
+
+const passwordHash = await bcrypt.hash(password, 10);
+
+await pool.query(
+  "INSERT INTO users (full_name, email, password_hash, role) VALUES (?, ?, ?, ?)",
+  [fullName.trim(), normalizedEmail, passwordHash, role]
+);
+
+Entonces, cuando agregamos un usuario, se guarda en MySQL en la tabla:
+
+users
+
+La tabla esta definida aqui:
+
+backend/database/schema.sql
+
+Fragmento:
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(120) NOT NULL,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('cliente', 'dueno_negocio', 'administrador') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+LOGIN
+-----
+
+El login se encuentra aqui:
+
+frontend/src/pages/LoginPage.jsx
+
+Fragmento:
+
+const [form, setForm] = useState({
+  email: "",
+  password: ""
+});
+
+Cuando el usuario inicia sesion, se ejecuta:
+
+const response = await loginUser(form);
+localStorage.setItem("turnix_user", JSON.stringify(response.data.user));
+navigate("/dashboard");
+
+La funcion loginUser esta en:
+
+frontend/src/api/authService.js
+
+Fragmento:
+
+export function loginUser(payload) {
+  return apiClient.post("/auth/login", payload);
+}
+
+Eso llama al backend:
+
+POST /api/auth/login
+
+El backend busca el usuario:
+
+backend/src/controllers/auth.controller.js
+
+Fragmento:
+
+const [users] = await pool.query(
+  "SELECT id, full_name, email, password_hash, role FROM users WHERE email = ? LIMIT 1",
+  [email.trim().toLowerCase()]
+);
+
+Luego compara la contrasena:
+
+bcrypt.compare(password, users[0].password_hash)
+
+Si la contrasena es correcta, devuelve el usuario al frontend.
+
+
+CONEXION CON MYSQL
+------------------
+
+La conexion a MySQL esta aqui:
+
+backend/src/config/database.js
+
+Fragmento:
+
+export const pool = mysql.createPool({
+  host: env.db.host,
+  port: env.db.port,
+  user: env.db.user,
+  password: env.db.password,
+  database: env.db.database
+});
+
+Los datos vienen del archivo .env:
+
+backend/.env
+
+Ejemplo:
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=tu_clave
+DB_NAME=turnix_db
+
+Si necesitamos cambiar el usuario o contrasena de MySQL, lo hacemos en backend/.env.
+
+
+AXIOS
+-----
+
+React no se conecta directamente con MySQL. React llama al backend usando Axios.
+
+Axios esta configurado aqui:
+
+frontend/src/api/apiClient.js
+
+Fragmento:
+
+export const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api",
+});
+
+Esto significa que cuando escribimos:
+
+apiClient.get("/clients")
+
+en realidad se llama a:
+
+http://localhost:4000/api/clients
+
+
+CLIENTES
+--------
+
+La pestana de clientes esta dentro de:
+
+frontend/src/pages/BusinessPage.jsx
+
+Ahi se guarda la lista de clientes:
+
+const [clients, setClients] = useState([]);
+
+Cuando se cargan los datos, se ejecuta:
+
+const clientsResponse = await getClients();
+setClients(clientsResponse.data.clients);
+
+La funcion getClients esta en:
+
+frontend/src/api/clientService.js
+
+Fragmento:
+
+export function getClients() {
+  return apiClient.get("/clients");
+}
+
+Para crear un cliente se usa:
+
+export function createClient(payload) {
+  return apiClient.post("/clients", payload);
+}
+
+En backend, las rutas estan aqui:
+
+backend/src/routes/client.routes.js
+
+Fragmento:
+
+router.get("/", getClients);
+router.post("/", createClient);
+router.put("/:id", updateClient);
+router.delete("/:id", deleteClient);
+
+Y la logica esta aqui:
+
+backend/src/controllers/client.controller.js
+
+Para guardar un cliente:
+
+await pool.query(
+  "INSERT INTO clients (full_name, email, phone, document_number, notes) VALUES (?, ?, ?, ?, ?)",
+  [fullName.trim(), email || null, phone || null, documentNumber || null, notes || null]
+);
+
+Los clientes se almacenan en la tabla:
+
+clients
+
+Definida en:
+
+backend/database/schema.sql
+
+Fragmento:
+
+CREATE TABLE IF NOT EXISTS clients (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(120) NOT NULL,
+  email VARCHAR(120),
+  phone VARCHAR(30),
+  document_number VARCHAR(40),
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CITAS
+-----
+
+Las citas tambien estan en:
+
+frontend/src/pages/BusinessPage.jsx
+
+Estado de citas:
+
+const [appointments, setAppointments] = useState([]);
+
+Formulario de citas:
+
+const emptyAppointmentForm = {
+  clientId: "",
+  clientName: "",
+  serviceName: "",
+  appointmentDate: "",
+  appointmentTime: "",
+  status: "pendiente",
+  notes: ""
+};
+
+Cuando agregamos una cita, se ejecuta:
+
+await createAppointment(appointmentForm);
+
+La funcion esta aqui:
+
+frontend/src/api/appointmentService.js
+
+Fragmento:
+
+export function createAppointment(payload) {
+  return apiClient.post("/appointments", payload);
+}
+
+Backend:
+
+backend/src/routes/appointment.routes.js
+
+Fragmento:
+
+router.get("/", getAppointments);
+router.post("/", createAppointment);
+router.put("/:id", updateAppointment);
+router.delete("/:id", deleteAppointment);
+
+Controlador:
+
+backend/src/controllers/appointment.controller.js
+
+Fragmento:
+
+await pool.query(
+  `INSERT INTO appointments
+   (client_id, client_name, service_name, appointment_date, appointment_time, status, notes)
+   VALUES (?, ?, ?, ?, ?, ?, ?)`,
+  [clientId || null, clientName.trim(), serviceName.trim(), appointmentDate, appointmentTime, status || "pendiente", notes || null]
+);
+
+Las citas se guardan en la tabla:
+
+appointments
+
+
+TURNOS
+------
+
+Los turnos estan en la misma pantalla de gestion:
+
+frontend/src/pages/BusinessPage.jsx
+
+Estado:
+
+const [turns, setTurns] = useState([]);
+
+Formulario:
+
+const emptyTurnForm = {
+  turnCode: "",
+  clientName: "",
+  serviceName: "",
+  status: "esperando",
+  priority: "normal"
+};
+
+Para crear un turno:
+
+await createTurn(payload);
+
+La funcion esta aqui:
+
+frontend/src/api/turnService.js
+
+Fragmento:
+
+export function createTurn(payload) {
+  return apiClient.post("/turns", payload);
+}
+
+Backend:
+
+backend/src/routes/turn.routes.js
+
+Fragmento:
+
+router.get("/", getTurns);
+router.post("/", createTurn);
+router.put("/:id", updateTurn);
+router.delete("/:id", deleteTurn);
+
+Controlador:
+
+backend/src/controllers/turn.controller.js
+
+Fragmento:
+
+await pool.query(
+  "INSERT INTO turns (turn_code, client_name, service_name, status, priority) VALUES (?, ?, ?, ?, ?)",
+  [turnCode.trim(), clientName.trim(), serviceName.trim(), status || "esperando", priority || "normal"]
+);
+
+Los turnos se guardan en la tabla:
+
+turns
+
+
+REPORTES
+--------
+
+Los reportes no se guardan en una tabla nueva. Se calculan usando los datos de:
+
+clients
+appointments
+turns
+
+Frontend:
+
+frontend/src/api/reportService.js
+
+Fragmento:
+
+export function getReportSummary() {
+  return apiClient.get("/reports/summary");
+}
+
+Backend:
+
+backend/src/routes/report.routes.js
+
+Fragmento:
+
+router.get("/summary", getReportSummary);
+
+Controlador:
+
+backend/src/controllers/report.controller.js
+
+Fragmento:
+
+const [[clientCount]] = await pool.query("SELECT COUNT(*) AS total FROM clients");
+const [[appointmentCount]] = await pool.query("SELECT COUNT(*) AS total FROM appointments");
+const [[turnCount]] = await pool.query("SELECT COUNT(*) AS total FROM turns");
+
+Eso significa que el reporte cuenta los registros de la base de datos y los muestra en frontend.
+
+
+DASHBOARD PRINCIPAL
+-------------------
+
+El dashboard se modifica aqui:
+
+frontend/src/pages/DashboardPage.jsx
+
+Carga los reportes asi:
+
+useEffect(() => {
+  getReportSummary()
+    .then((response) => {
+      setSummary(response.data.summary);
+      setRecentAppointments(response.data.recentAppointments);
+    });
+}, []);
+
+useEffect sirve para ejecutar algo cuando la pagina carga.
+
+Aqui se muestran las tarjetas:
+
+const cards = [
+  { label: "Clientes", value: summary.clients },
+  { label: "Citas", value: summary.appointments },
+  { label: "Citas pendientes", value: summary.pendingAppointments },
+  { label: "Turnos activos", value: summary.activeTurns }
+];
+
+Si agregamos una cita o cliente desde la gestion, el dashboard refleja esos datos porque los lee desde MySQL mediante /api/reports/summary.
+
+
+COMO SE COMUNICAN LAS PARTES
+----------------------------
+
+El flujo general es:
+
+Usuario usa la interfaz
+        ↓
+React captura los datos
+        ↓
+Servicio Axios envia datos
+        ↓
+Express recibe la peticion
+        ↓
+Controller valida y ejecuta SQL
+        ↓
+MySQL guarda o devuelve datos
+        ↓
+Express responde
+        ↓
+React actualiza la pantalla
+
+Ejemplo con clientes:
+
+BusinessPage.jsx
+        ↓
+createClient()
+        ↓
+clientService.js
+        ↓
+POST /api/clients
+        ↓
+client.routes.js
+        ↓
+client.controller.js
+        ↓
+INSERT INTO clients
+        ↓
+MySQL
+
+
+DONDE MODIFICAR CADA COSA
+-------------------------
+
+Para cambiar la pagina de inicio:
+
+frontend/src/pages/HomePage.jsx
+
+Para cambiar login:
+
+frontend/src/pages/LoginPage.jsx
+
+Para cambiar registro:
+
+frontend/src/pages/RegisterPage.jsx
+
+Para cambiar dashboard:
+
+frontend/src/pages/DashboardPage.jsx
+
+Para cambiar clientes, citas, turnos y reportes visuales:
+
+frontend/src/pages/BusinessPage.jsx
+
+Para cambiar llamadas al backend:
+
+frontend/src/api/
+
+Para cambiar rutas del backend:
+
+backend/src/routes/
+
+Para cambiar logica SQL:
+
+backend/src/controllers/
+
+Para cambiar tablas de MySQL:
+
+backend/database/schema.sql
+
+Para cambiar conexion MySQL:
+
+backend/.env
+
+
+COMO LEVANTAR EL PROYECTO
+-------------------------
+
+Desde la carpeta principal:
+
+cd C:\Users\mathi\Desktop\TURNIX-javaAV
+npm run dev
+
+Frontend:
+
+http://localhost:5173
+
+Backend:
+
+http://localhost:4000
+
+Gestion principal:
+
+http://localhost:5173/negocio
+
+
+RESUMEN FINAL
+-------------
+
+En resumen: este proyecto usa React para mostrar y manejar la interfaz, Axios para comunicarse con Express, Express para procesar las rutas, y MySQL para guardar usuarios, clientes, citas y turnos.
