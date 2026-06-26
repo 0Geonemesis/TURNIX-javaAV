@@ -1,0 +1,349 @@
+:root {
+  --turnix-primary: #2563eb;
+  --turnix-dark: #111827;
+  --turnix-soft: #64748b;
+  --turnix-bg: #f4f7fb;
+  --turnix-border: #e5e7eb;
+}
+
+/* Estilo general de toda la app React. */
+body {
+  background: var(--turnix-bg);
+  color: var(--turnix-dark);
+}
+
+/* Mantiene el footer visual al fondo cuando las paginas son cortas. */
+.app-shell {
+  min-height: 100vh;
+}
+
+/* Hero principal de la pagina de inicio. */
+.home-hero {
+  background: linear-gradient(135deg, #1e40af, #2563eb 55%, #0f172a);
+  color: #ffffff;
+  padding: 88px 0 72px;
+}
+
+.home-hero h1 {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.home-hero p {
+  max-width: 620px;
+  color: #dbeafe;
+  font-size: 1.2rem;
+}
+
+/* Panel informativo del hero. */
+.hero-panel {
+  background: #ffffff;
+  border-radius: 8px;
+  color: var(--turnix-dark);
+  padding: 28px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+}
+
+.hero-panel ul {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+  padding-left: 18px;
+}
+
+.section-title {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  color: var(--turnix-primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+/* Tarjetas de servicios en Inicio. */
+.service-card,
+.metric-card,
+.content-panel,
+.auth-card {
+  background: #ffffff;
+  border: 1px solid var(--turnix-border);
+  border-radius: 8px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+}
+
+.service-card {
+  padding: 24px;
+}
+
+.service-card span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.service-card h3 {
+  font-size: 1.15rem;
+}
+
+.service-card p,
+.metric-card p,
+.page-header p,
+.content-panel p {
+  color: var(--turnix-soft);
+}
+
+/* Paginas de login y registro. */
+.auth-page {
+  min-height: calc(100vh - 57px);
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+}
+
+.auth-card {
+  width: min(100%, 430px);
+  padding: 28px;
+}
+
+.auth-card.wide {
+  width: min(100%, 760px);
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--turnix-primary);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+/* Layout interno del dashboard. */
+.dashboard-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-sidebar {
+  width: 270px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 22px;
+}
+
+.brand-block {
+  color: #ffffff;
+  display: flex;
+  gap: 12px;
+  text-decoration: none;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.brand-block small {
+  color: #cbd5e1;
+  display: block;
+}
+
+.dashboard-nav {
+  display: grid;
+  gap: 8px;
+}
+
+.dashboard-nav a {
+  color: #e2e8f0;
+  text-decoration: none;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.dashboard-nav a.active,
+.dashboard-nav a:hover {
+  background: var(--turnix-primary);
+  color: #ffffff;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 28px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-weight: 800;
+}
+
+.metric-card,
+.content-panel {
+  padding: 24px;
+}
+
+.metric-card span {
+  color: var(--turnix-soft);
+  font-weight: 700;
+}
+
+.metric-card strong {
+  display: block;
+  font-size: 2.3rem;
+  line-height: 1;
+  margin: 12px 0;
+}
+
+/* Encabezado compacto usado dentro de paneles y tablas. */
+.section-row {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.section-row h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.section-row p {
+  margin: 0;
+}
+
+/* Formularios CRUD de clientes, citas y turnos. */
+.crud-form {
+  background: #f8fafc;
+  border: 1px solid var(--turnix-border);
+  border-radius: 8px;
+  margin-bottom: 22px;
+  padding: 18px;
+}
+
+.crud-table {
+  border: 1px solid var(--turnix-border);
+  border-radius: 8px;
+}
+
+.crud-table table {
+  margin-bottom: 0;
+}
+
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.action-submit {
+  max-width: 220px;
+}
+
+/* Estados visuales para citas y turnos. */
+.status-pill {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  justify-content: center;
+  min-width: 94px;
+  padding: 6px 10px;
+  text-transform: capitalize;
+}
+
+.status-pendiente,
+.status-esperando {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-confirmada,
+.status-en_atencion {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-atendida,
+.status-atendido {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-cancelada,
+.status-cancelado {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Tarjetas y bloques de reportes. */
+.mini-report,
+.report-box {
+  background: #f8fafc;
+  border: 1px solid var(--turnix-border);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.mini-report span {
+  color: var(--turnix-soft);
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.mini-report strong {
+  font-size: 2rem;
+}
+
+.report-box h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.report-line {
+  align-items: center;
+  border-top: 1px solid var(--turnix-border);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+/* Ajustes para pantallas pequenas. */
+@media (max-width: 800px) {
+  .dashboard-shell {
+    display: block;
+  }
+
+  .dashboard-sidebar {
+    width: 100%;
+  }
+
+  .dashboard-main {
+    padding: 18px;
+  }
+}
