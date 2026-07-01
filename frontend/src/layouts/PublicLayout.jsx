@@ -7,7 +7,7 @@ export default function PublicLayout() {
       <nav className="navbar navbar-expand-lg bg-white border-bottom sticky-top">
         <div className="container">
           <Link className="navbar-brand fw-bold text-primary" to="/">
-            Turnix
+            TURN0
           </Link>
 
           <button

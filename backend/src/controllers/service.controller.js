@@ -1,4 +1,4 @@
-// Servicios principales que Turnix ofrece en la pagina de inicio.
+// Servicios principales que TURN0 ofrece en la pagina de inicio.
 // Por ahora son datos base; luego pueden venir desde MySQL.
 export function getServices(req, res) {
   res.json({

@@ -29,8 +29,8 @@ app.use(express.json());
 // Ruta raiz sencilla para confirmar en el navegador que la API esta viva.
 app.get("/", (req, res) => {
   res.json({
-    app: "Turnix API",
-    message: "Base del Sprint 1 funcionando"
+    app: "TURN0 API",
+    message: "Base de TURN0 funcionando"
   });
 });
 

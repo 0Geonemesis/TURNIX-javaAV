@@ -8,7 +8,9 @@ import {
 import { createClient, deleteClient, getClients, updateClient } from "../api/clientService";
 import { getReportSummary } from "../api/reportService";
 import { createTurn, deleteTurn, getTurns, updateTurn } from "../api/turnService";
+import AppointmentCountdown from "../components/AppointmentCountdown.jsx";
 import PageHeader from "../components/PageHeader.jsx";
+import { getRolePermissions, getSession } from "../utils/auth";
 
 const emptyClientForm = {
   fullName: "",
@@ -38,6 +40,9 @@ const emptyTurnForm = {
 
 // Panel publico de gestion: aqui viven los CRUD principales del sistema.
 export default function BusinessPage() {
+  const session = getSession();
+  const permissions = getRolePermissions(session?.role);
+  const [activeTab, setActiveTab] = useState(permissions.tabs[0]);
   const [clients, setClients] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [turns, setTurns] = useState([]);
@@ -54,10 +59,10 @@ export default function BusinessPage() {
   async function loadData() {
     try {
       const [clientsResponse, appointmentsResponse, turnsResponse, reportResponse] = await Promise.all([
-        getClients(),
-        getAppointments(),
-        getTurns(),
-        getReportSummary()
+        permissions.tabs.includes("clientes") || permissions.tabs.includes("citas") ? getClients().catch(() => ({ data: { clients: [] } })) : Promise.resolve({ data: { clients: [] } }),
+        permissions.tabs.includes("citas") ? getAppointments() : Promise.resolve({ data: { appointments: [] } }),
+        permissions.tabs.includes("turnos") ? getTurns() : Promise.resolve({ data: { turns: [] } }),
+        permissions.tabs.includes("reportes") ? getReportSummary() : Promise.resolve({ data: null })
       ]);
 
       setClients(clientsResponse.data.clients);
@@ -66,13 +71,22 @@ export default function BusinessPage() {
       setReport(reportResponse.data);
       setMessage("");
     } catch (error) {
-      setMessage(error.response?.data?.message || "No se pudieron cargar los datos. Revisa MySQL y el backend.");
+      setMessage(error.friendlyMessage || "No se pudieron cargar los datos. Revisa MySQL y el backend.");
     }
   }
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (session?.role === "cliente") {
+      setAppointmentForm((currentForm) => ({
+        ...currentForm,
+        clientName: currentForm.clientName || session.fullName
+      }));
+    }
+  }, [session?.role, session?.fullName]);
 
   // Genera el siguiente codigo de turno sugerido usando la cantidad actual.
   const nextTurnCode = useMemo(() => {
@@ -120,7 +134,7 @@ export default function BusinessPage() {
       setEditingClientId(null);
       await loadData();
     } catch (error) {
-      setMessage(error.response?.data?.message || "No se pudo guardar el cliente.");
+      setMessage(error.friendlyMessage || "No se pudo guardar el cliente.");
     }
   }
 
@@ -140,7 +154,7 @@ export default function BusinessPage() {
       setEditingAppointmentId(null);
       await loadData();
     } catch (error) {
-      setMessage(error.response?.data?.message || "No se pudo guardar la cita.");
+      setMessage(error.friendlyMessage || "No se pudo guardar la cita.");
     }
   }
 
@@ -165,7 +179,7 @@ export default function BusinessPage() {
       setEditingTurnId(null);
       await loadData();
     } catch (error) {
-      setMessage(error.response?.data?.message || "No se pudo guardar el turno.");
+      setMessage(error.friendlyMessage || "No se pudo guardar el turno.");
     }
   }
 
@@ -210,7 +224,7 @@ export default function BusinessPage() {
         await deleteClient(id);
         await loadData();
       } catch (error) {
-        setMessage(error.response?.data?.message || "No se pudo eliminar el cliente.");
+        setMessage(error.friendlyMessage || "No se pudo eliminar el cliente.");
       }
     }
   }
@@ -221,7 +235,7 @@ export default function BusinessPage() {
         await deleteAppointment(id);
         await loadData();
       } catch (error) {
-        setMessage(error.response?.data?.message || "No se pudo eliminar la cita.");
+        setMessage(error.friendlyMessage || "No se pudo eliminar la cita.");
       }
     }
   }
@@ -232,27 +246,28 @@ export default function BusinessPage() {
         await deleteTurn(id);
         await loadData();
       } catch (error) {
-        setMessage(error.response?.data?.message || "No se pudo eliminar el turno.");
+        setMessage(error.friendlyMessage || "No se pudo eliminar el turno.");
       }
     }
   }
 
   return (
     <>
-      <PageHeader title="Gestion publica de Turnix" description="Administra clientes, citas, turnos y reportes desde un solo panel." />
+      <PageHeader title="Gestion TURN0" description={`Vista activa para ${permissions.label}. Los modulos visibles dependen del rol.`} />
 
       {message && <div className="alert alert-info">{message}</div>}
 
       <section className="content-panel">
-        <ul className="nav nav-tabs" id="businessTabs" role="tablist">
-          <TabButton id="clientes" label="Clientes" active />
-          <TabButton id="citas" label="Citas" />
-          <TabButton id="turnos" label="Turnos" />
-          <TabButton id="reportes" label="Reportes" />
+        <ul className="nav nav-tabs" role="tablist">
+          {permissions.tabs.includes("clientes") && <TabButton id="clientes" label="Clientes" activeTab={activeTab} onSelect={setActiveTab} />}
+          {permissions.tabs.includes("citas") && <TabButton id="citas" label="Citas" activeTab={activeTab} onSelect={setActiveTab} />}
+          {permissions.tabs.includes("turnos") && <TabButton id="turnos" label="Turnos" activeTab={activeTab} onSelect={setActiveTab} />}
+          {permissions.tabs.includes("reportes") && <TabButton id="reportes" label="Reportes" activeTab={activeTab} onSelect={setActiveTab} />}
         </ul>
 
         <div className="tab-content pt-4">
-          <div className="tab-pane fade show active" id="clientes" role="tabpanel" aria-labelledby="clientes-tab">
+          {activeTab === "clientes" && (
+          <div>
             <SectionTitle title="Clientes" detail="Registra, edita y elimina clientes del sistema." />
             <ClientForm form={clientForm} editingId={editingClientId} onChange={handleClientChange} onSubmit={handleClientSubmit} onCancel={() => {
               setClientForm(emptyClientForm);
@@ -260,17 +275,22 @@ export default function BusinessPage() {
             }} />
             <ClientTable clients={clients} onEdit={editClient} onDelete={removeClient} />
           </div>
+          )}
 
-          <div className="tab-pane fade" id="citas" role="tabpanel" aria-labelledby="citas-tab">
-            <SectionTitle title="Citas" detail="Programa citas por cliente, servicio, fecha, hora y estado." />
+          {activeTab === "citas" && (
+          <div>
+            <SectionTitle title="Citas" detail={permissions.canManage ? "Programa citas por cliente, servicio, fecha, hora y estado." : "Visualiza y solicita citas disponibles."} />
+            <AppointmentCountdown appointments={getVisibleAppointments(appointments, session)} title={permissions.canManage ? "Siguiente cita en agenda" : "Cronometro de tu cita"} />
             <AppointmentForm clients={clients} form={appointmentForm} editingId={editingAppointmentId} onChange={handleAppointmentChange} onSubmit={handleAppointmentSubmit} onCancel={() => {
               setAppointmentForm(emptyAppointmentForm);
               setEditingAppointmentId(null);
-            }} />
-            <AppointmentTable appointments={appointments} onEdit={editAppointment} onDelete={removeAppointment} />
+            }} readOnlyStatus={!permissions.canManage} lockClientName={session?.role === "cliente"} />
+            <AppointmentTable appointments={getVisibleAppointments(appointments, session)} onEdit={editAppointment} onDelete={removeAppointment} canManage={permissions.canManage} />
           </div>
+          )}
 
-          <div className="tab-pane fade" id="turnos" role="tabpanel" aria-labelledby="turnos-tab">
+          {activeTab === "turnos" && (
+          <div>
             <SectionTitle title="Turnos" detail="Controla la fila de atencion del negocio." />
             <TurnForm form={turnForm} editingId={editingTurnId} nextTurnCode={nextTurnCode} onChange={handleTurnChange} onSubmit={handleTurnSubmit} onCancel={() => {
               setTurnForm(emptyTurnForm);
@@ -278,21 +298,24 @@ export default function BusinessPage() {
             }} />
             <TurnTable turns={turns} onEdit={editTurn} onDelete={removeTurn} />
           </div>
+          )}
 
-          <div className="tab-pane fade" id="reportes" role="tabpanel" aria-labelledby="reportes-tab">
+          {activeTab === "reportes" && (
+          <div>
             <SectionTitle title="Reportes" detail="Resumen calculado desde clientes, citas y turnos." />
             <ReportPanel report={report} />
           </div>
+          )}
         </div>
       </section>
     </>
   );
 }
 
-function TabButton({ id, label, active = false }) {
+function TabButton({ id, label, activeTab, onSelect }) {
   return (
     <li className="nav-item" role="presentation">
-      <button className={`nav-link ${active ? "active" : ""}`} id={`${id}-tab`} data-bs-toggle="tab" data-bs-target={`#${id}`} type="button" role="tab">
+      <button className={`nav-link ${activeTab === id ? "active" : ""}`} type="button" role="tab" onClick={() => onSelect(id)}>
         {label}
       </button>
     </li>
@@ -370,13 +393,13 @@ function ClientTable({ clients, onEdit, onDelete }) {
   );
 }
 
-function AppointmentForm({ clients, form, editingId, onChange, onSubmit, onCancel }) {
+function AppointmentForm({ clients, form, editingId, onChange, onSubmit, onCancel, readOnlyStatus, lockClientName }) {
   return (
     <form className="crud-form" onSubmit={onSubmit}>
       <div className="row g-3">
         <div className="col-md-6 col-xl-3">
           <label className="form-label">Cliente existente</label>
-          <select className="form-select" name="clientId" value={form.clientId} onChange={onChange}>
+          <select className="form-select" name="clientId" value={form.clientId} onChange={onChange} disabled={lockClientName}>
             <option value="">Escribir manualmente</option>
             {clients.map((client) => (
               <option key={client.id} value={client.id}>{client.full_name}</option>
@@ -385,7 +408,7 @@ function AppointmentForm({ clients, form, editingId, onChange, onSubmit, onCance
         </div>
         <div className="col-md-6 col-xl-3">
           <label className="form-label">Nombre del cliente</label>
-          <input className="form-control" name="clientName" value={form.clientName} onChange={onChange} required />
+          <input className="form-control" name="clientName" value={form.clientName} onChange={onChange} required readOnly={lockClientName} />
         </div>
         <div className="col-md-6 col-xl-2">
           <label className="form-label">Servicio</label>
@@ -401,7 +424,7 @@ function AppointmentForm({ clients, form, editingId, onChange, onSubmit, onCance
         </div>
         <div className="col-md-6 col-xl-3">
           <label className="form-label">Estado</label>
-          <select className="form-select" name="status" value={form.status} onChange={onChange}>
+          <select className="form-select" name="status" value={form.status} onChange={onChange} disabled={readOnlyStatus}>
             <option value="pendiente">Pendiente</option>
             <option value="confirmada">Confirmada</option>
             <option value="atendida">Atendida</option>
@@ -421,7 +444,7 @@ function AppointmentForm({ clients, form, editingId, onChange, onSubmit, onCance
   );
 }
 
-function AppointmentTable({ appointments, onEdit, onDelete }) {
+function AppointmentTable({ appointments, onEdit, onDelete, canManage }) {
   return (
     <DataTable>
       <thead>
@@ -431,18 +454,18 @@ function AppointmentTable({ appointments, onEdit, onDelete }) {
           <th>Fecha</th>
           <th>Hora</th>
           <th>Estado</th>
-          <th>Acciones</th>
+          {canManage && <th>Acciones</th>}
         </tr>
       </thead>
       <tbody>
-        {appointments.length === 0 ? <EmptyRow columns={6} text="Todavia no hay citas registradas." /> : appointments.map((appointment) => (
+        {appointments.length === 0 ? <EmptyRow columns={canManage ? 6 : 5} text="Todavia no hay citas registradas." /> : appointments.map((appointment) => (
           <tr key={appointment.id}>
             <td>{appointment.client_name}</td>
             <td>{appointment.service_name}</td>
             <td>{formatDisplayDate(appointment.appointment_date)}</td>
             <td>{String(appointment.appointment_time || "").slice(0, 5)}</td>
             <td><StatusBadge value={appointment.status} /></td>
-            <td><ActionButtons onEdit={() => onEdit(appointment)} onDelete={() => onDelete(appointment.id)} /></td>
+            {canManage && <td><ActionButtons onEdit={() => onEdit(appointment)} onDelete={() => onDelete(appointment.id)} /></td>}
           </tr>
         ))}
       </tbody>
@@ -529,11 +552,17 @@ function ReportPanel({ report }) {
     { label: "Clientes registrados", value: report.summary.clients },
     { label: "Citas totales", value: report.summary.appointments },
     { label: "Turnos totales", value: report.summary.turns },
-    { label: "Turnos activos", value: report.summary.activeTurns }
+    { label: "Atenciones", value: report.summary.attentions },
+    { label: "Promedio atencion", value: `${report.summary.averageAttentionMinutes} min` }
   ];
 
   return (
     <>
+      <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-primary" type="button" onClick={() => downloadReportPdf(report)}>
+          Descargar PDF
+        </button>
+      </div>
       <div className="row g-3">
         {cards.map((card) => (
           <div className="col-md-6 col-xl-3" key={card.label}>
@@ -554,6 +583,48 @@ function ReportPanel({ report }) {
       </div>
     </>
   );
+}
+
+async function downloadReportPdf(report) {
+  const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+    import("jspdf"),
+    import("jspdf-autotable")
+  ]);
+
+  const doc = new jsPDF();
+  doc.setFontSize(18);
+  doc.text("Reporte TURN0", 14, 18);
+  doc.setFontSize(10);
+  doc.text(`Generado: ${new Date().toLocaleString("es-PE")}`, 14, 26);
+
+  autoTable(doc, {
+    startY: 34,
+    head: [["Indicador", "Total"]],
+    body: [
+      ["Clientes registrados", report.summary.clients],
+      ["Citas totales", report.summary.appointments],
+      ["Turnos totales", report.summary.turns],
+      ["Atenciones registradas", report.summary.attentions],
+      ["Citas pendientes", report.summary.pendingAppointments],
+      ["Turnos activos", report.summary.activeTurns],
+      ["Tickets atendidos", report.summary.attendedTurns],
+      ["Promedio de atencion", `${report.summary.averageAttentionMinutes} min`]
+    ]
+  });
+
+  autoTable(doc, {
+    startY: doc.lastAutoTable.finalY + 10,
+    head: [["Cita", "Servicio", "Fecha", "Hora", "Estado"]],
+    body: report.recentAppointments.map((appointment) => [
+      appointment.client_name,
+      appointment.service_name,
+      formatDisplayDate(appointment.appointment_date),
+      String(appointment.appointment_time || "").slice(0, 5),
+      appointment.status
+    ])
+  });
+
+  doc.save("reporte-turn0.pdf");
 }
 
 function StatusList({ title, items }) {
@@ -599,4 +670,14 @@ function formatDateInput(value) {
 function formatDisplayDate(value) {
   if (!value) return "-";
   return new Date(value).toLocaleDateString("es-PE", { timeZone: "UTC" });
+}
+
+function getVisibleAppointments(appointments, session) {
+  if (session?.role !== "cliente") {
+    return appointments;
+  }
+
+  return appointments.filter((appointment) => {
+    return appointment.client_name?.toLowerCase() === session.fullName?.toLowerCase();
+  });
 }

@@ -9,7 +9,7 @@ export async function getHealth(req, res) {
     res.json({
       api: "ok",
       database: "ok",
-      message: "Turnix esta conectado correctamente"
+      message: "TURN0 esta conectado correctamente"
     });
   } catch (error) {
     res.status(500).json({

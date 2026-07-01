@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../api/authService";
+import { saveSession } from "../utils/auth";
 
 // Pagina de login conectada al backend sin JWT por ahora.
 export default function LoginPage() {
@@ -25,7 +26,7 @@ export default function LoginPage() {
 
     try {
       const response = await loginUser(form);
-      localStorage.setItem("turnix_user", JSON.stringify(response.data.user));
+      saveSession(response.data.user);
       setMessageType("text-success");
       setMessage("Inicio de sesion correcto. Entrando al dashboard...");
       setTimeout(() => navigate("/dashboard"), 800);
@@ -39,17 +40,17 @@ export default function LoginPage() {
     <main className="auth-page">
       <section className="auth-card">
         <div className="auth-brand">
-          <span className="brand-mark">T</span>
+          <span className="brand-mark">0</span>
           <h1>Iniciar sesion</h1>
-          <p>Accede al panel base de Turnix.</p>
+          <p>Accede al panel de TURN0.</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label" htmlFor="email">
-              Correo electronico
+              Usuario o correo
             </label>
-            <input className="form-control" id="email" name="email" type="email" value={form.email} onChange={handleChange} />
+            <input className="form-control" id="email" name="email" type="text" value={form.email} onChange={handleChange} />
           </div>
 
           <div className="mb-3">

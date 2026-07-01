@@ -22,8 +22,7 @@ export default function RegisterPage() {
       .catch(() =>
         setRoles([
           { value: "cliente", label: "Cliente" },
-          { value: "dueno_negocio", label: "Dueno de negocio" },
-          { value: "administrador", label: "Administrador" }
+          { value: "dueno_negocio", label: "Dueno de negocio" }
         ])
       );
   }, []);
@@ -70,7 +69,7 @@ export default function RegisterPage() {
         <div className="auth-brand">
           <span className="brand-mark">T</span>
           <h1>Crear cuenta</h1>
-          <p>Registra un cliente, dueno de negocio o administrador.</p>
+          <p>Registra un cliente o dueno de negocio. El administrador se crea desde la base de datos.</p>
         </div>
 
         <form onSubmit={handleSubmit}>

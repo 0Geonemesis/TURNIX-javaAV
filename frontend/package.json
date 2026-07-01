@@ -1,5 +1,5 @@
 {
-  "name": "turnix-frontend",
+  "name": "turn0-frontend",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -11,6 +11,8 @@
     "@vitejs/plugin-react": "^4.3.4",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.1"

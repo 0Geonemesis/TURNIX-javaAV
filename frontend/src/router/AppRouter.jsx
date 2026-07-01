@@ -6,6 +6,7 @@ import LoginPage from "../pages/LoginPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import DashboardPage from "../pages/DashboardPage.jsx";
 import BusinessPage from "../pages/BusinessPage.jsx";
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
 
 // React Router define que componente se muestra segun la URL.
 export default function AppRouter() {
@@ -19,10 +20,12 @@ export default function AppRouter() {
           <Route path="/registro" element={<RegisterPage />} />
         </Route>
 
-        {/* Rutas internas que luego podran protegerse con JWT. */}
-        <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/negocio" element={<BusinessPage />} />
+        {/* Rutas internas protegidas por una sesion local simple. */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/negocio" element={<BusinessPage />} />
+          </Route>
         </Route>
 
         {/* Cualquier ruta desconocida vuelve al inicio. */}

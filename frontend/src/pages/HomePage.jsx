@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getServices } from "../api/serviceService";
 
-// Pagina de inicio: presenta todos los servicios principales de Turnix.
+// Pagina de inicio: presenta todos los servicios principales de TURN0.
 export default function HomePage() {
   const [services, setServices] = useState([]);
   const [apiStatus, setApiStatus] = useState("Cargando servicios...");
@@ -31,7 +31,7 @@ export default function HomePage() {
           <div className="row align-items-center g-4">
             <div className="col-lg-7">
               <span className="badge text-bg-light mb-3">Sistema para pequenos negocios</span>
-              <h1>Turnix</h1>
+              <h1>TURN0</h1>
               <p>
                 Gestiona filas, citas, clientes y reportes desde una base preparada para crecer .
               </p>
@@ -49,8 +49,8 @@ export default function HomePage() {
                 <h2>INFORMACION PUBLICA </h2>
                 <ul>
                   <li>TEL : 123-456-7890</li>
-                  <li>CORREO : info@turnix.com</li>
-                  <li>YOUTUBE : @turnix</li>
+                  <li>CORREO : info@turn0.com</li>
+                  <li>YOUTUBE : @turn0</li>
                   <li>ASOCIADOS : Empresas</li>
                 </ul>
                 <small>{apiStatus}</small>
