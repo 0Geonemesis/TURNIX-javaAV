@@ -1,13 +1,16 @@
 import { pool } from "../config/database.js";
 import { httpError } from "../utils/httpError.js";
 
+const VALID_TURN_STATUSES = ["esperando", "en_atencion", "atendido", "cancelado"];
+const VALID_PRIORITIES = ["normal", "preferencial"];
+
 export async function listTurns() {
   const [turns] = await pool.query("SELECT * FROM turns ORDER BY created_at DESC");
   return turns;
 }
 
-export async function createTurnRecord({ turnCode, clientName, serviceName, status, priority }) {
-  validateTurn({ turnCode, clientName, serviceName });
+export async function createTurnRecord({ turnCode, clientName, serviceName, status = "esperando", priority = "normal" }) {
+  validateTurn({ turnCode, clientName, serviceName, status, priority });
 
   const [result] = await pool.query(
     "INSERT INTO turns (turn_code, client_name, service_name, status, priority, attended_at) VALUES (?, ?, ?, ?, ?, ?)",
@@ -15,8 +18,8 @@ export async function createTurnRecord({ turnCode, clientName, serviceName, stat
       turnCode.trim(),
       clientName.trim(),
       serviceName.trim(),
-      status || "esperando",
-      priority || "normal",
+      status,
+      priority,
       status === "atendido" ? new Date() : null
     ]
   );
@@ -24,8 +27,8 @@ export async function createTurnRecord({ turnCode, clientName, serviceName, stat
   return { id: result.insertId };
 }
 
-export async function updateTurnRecord(id, { turnCode, clientName, serviceName, status, priority }) {
-  validateTurn({ turnCode, clientName, serviceName });
+export async function updateTurnRecord(id, { turnCode, clientName, serviceName, status = "esperando", priority = "normal" }) {
+  validateTurn({ turnCode, clientName, serviceName, status, priority });
 
   const [currentRows] = await pool.query("SELECT status FROM turns WHERE id = ?", [id]);
   if (currentRows.length === 0) {
@@ -41,7 +44,7 @@ export async function updateTurnRecord(id, { turnCode, clientName, serviceName, 
     `UPDATE turns
      SET turn_code = ?, client_name = ?, service_name = ?, status = ?, priority = ?, attended_at = ${attendedAtExpression}
      WHERE id = ?`,
-    [turnCode.trim(), clientName.trim(), serviceName.trim(), status || "esperando", priority || "normal", id]
+    [turnCode.trim(), clientName.trim(), serviceName.trim(), status, priority, id]
   );
 
   if (result.affectedRows === 0) {
@@ -62,8 +65,16 @@ export async function deleteTurnRecord(id) {
   await pool.query("DELETE FROM turns WHERE id = ?", [id]);
 }
 
-function validateTurn({ turnCode, clientName, serviceName }) {
+function validateTurn({ turnCode, clientName, serviceName, status, priority }) {
   if (!turnCode || !clientName || !serviceName) {
     throw httpError(400, "Codigo, cliente y servicio son obligatorios");
+  }
+
+  if (status && !VALID_TURN_STATUSES.includes(status)) {
+    throw httpError(400, "Estado de turno no permitido");
+  }
+
+  if (priority && !VALID_PRIORITIES.includes(priority)) {
+    throw httpError(400, "Prioridad de turno no permitida");
   }
 }

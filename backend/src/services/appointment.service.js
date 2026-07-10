@@ -1,6 +1,10 @@
 import { pool } from "../config/database.js";
 import { httpError } from "../utils/httpError.js";
 
+const VALID_APPOINTMENT_STATUSES = ["pendiente", "confirmada", "atendida", "cancelada"];
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const TIME_PATTERN = /^\d{2}:\d{2}(:\d{2})?$/;
+
 export async function listAppointments() {
   const [appointments] = await pool.query(
     `SELECT appointments.*, clients.phone AS client_phone
@@ -49,8 +53,20 @@ export async function deleteAppointmentRecord(id) {
   }
 }
 
-function validateAppointment({ clientName, serviceName, appointmentDate, appointmentTime }) {
+function validateAppointment({ clientName, serviceName, appointmentDate, appointmentTime, status }) {
   if (!clientName || !serviceName || !appointmentDate || !appointmentTime) {
     throw httpError(400, "Cliente, servicio, fecha y hora son obligatorios");
+  }
+
+  if (!DATE_PATTERN.test(appointmentDate)) {
+    throw httpError(400, "La fecha de la cita debe tener formato AAAA-MM-DD");
+  }
+
+  if (!TIME_PATTERN.test(appointmentTime)) {
+    throw httpError(400, "La hora de la cita debe tener formato HH:MM");
+  }
+
+  if (status && !VALID_APPOINTMENT_STATUSES.includes(status)) {
+    throw httpError(400, "Estado de cita no permitido");
   }
 }

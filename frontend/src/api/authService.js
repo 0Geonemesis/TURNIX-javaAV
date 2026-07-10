@@ -1,11 +1,11 @@
 import { apiClient } from "./apiClient";
 
-// Servicio para registrar usuarios usando la API de Express.
+// Servicio para registrar usuarios usando la API .
 export function registerUser(payload) {
   return apiClient.post("/auth/register", payload);
 }
 
-// Servicio para iniciar sesion sin JWT en Sprint 1.
+// Servicio para iniciar sesion 
 export function loginUser(payload) {
   return apiClient.post("/auth/login", payload);
 }
