@@ -14,10 +14,30 @@ import reportRoutes from "./routes/report.routes.js";
 // Creamos una unica instancia de Express para configurar toda la API.
 const app = express();
 
+// Origenes locales permitidos para desarrollo.
+// Vite a veces usa 5174 si 5173 ya esta ocupado, por eso dejamos ambos.
+const allowedOrigins = new Set([
+  env.clientUrl,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174"
+]);
+
+function isLocalViteOrigin(origin) {
+  return /^http:\/\/(localhost|127\.0\.0\.1):517\d$/.test(origin);
+}
+
 // CORS permite que React, que corre en otro puerto, pueda llamar a Express.
 app.use(
   cors({
-    origin: env.clientUrl,
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.has(origin) || isLocalViteOrigin(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`Origen no permitido por CORS: ${origin}`));
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true
   })

@@ -48,18 +48,26 @@ export default function RegisterPage() {
     }
 
     try {
-      await registerUser({
+      const response = await registerUser({
         fullName: form.fullName,
         email: form.email,
         password: form.password,
         role: form.role
       });
       setMessageType("text-success");
-      setMessage("Cuenta creada correctamente. Te llevaremos al login...");
+      if (response.data.user?.alreadyRegistered) {
+        setMessage(response.data.welcomeEmail?.sent
+          ? "El usuario ya estaba registrado. Se reenvio el correo de bienvenida."
+          : "El usuario ya estaba registrado. No se pudo reenviar el correo.");
+      } else {
+        setMessage(response.data.welcomeEmail?.sent
+          ? "Cuenta creada correctamente. Se envio el correo de bienvenida."
+          : "Cuenta creada correctamente. No se pudo enviar el correo, pero el registro fue exitoso.");
+      }
       setTimeout(() => navigate("/login"), 900);
     } catch (error) {
       setMessageType("text-danger");
-      setMessage(error.response?.data?.message || "No se pudo registrar el usuario.");
+      setMessage(error.friendlyMessage || error.response?.data?.message || "No se pudo registrar el usuario.");
     }
   }
 
@@ -67,7 +75,7 @@ export default function RegisterPage() {
     <main className="auth-page">
       <section className="auth-card wide">
         <div className="auth-brand">
-          <span className="brand-mark">T</span>
+          <span className="brand-mark">0</span>
           <h1>Crear cuenta</h1>
           <p>Registra un cliente o dueno de negocio. El administrador se crea desde la base de datos.</p>
         </div>

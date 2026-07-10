@@ -424,6 +424,47 @@ body {
   padding: 20px;
 }
 
+.flow-card {
+  background: #ffffff;
+  border: 1px solid var(--turnix-border);
+  border-radius: 8px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
+  margin-bottom: 18px;
+  padding: 22px;
+}
+
+.flow-card span {
+  color: var(--turnix-primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.flow-card h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 6px 0;
+}
+
+.flow-card p {
+  color: var(--turnix-soft);
+  margin: 0;
+}
+
+.flow-card ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.flow-card li {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
 .countdown-card span {
   color: var(--turnix-primary);
   font-size: 0.8rem;
@@ -468,6 +509,11 @@ body {
 @media (max-width: 980px) {
   .calendar-grid {
     grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+
+  .flow-card,
+  .countdown-card {
+    grid-template-columns: 1fr;
   }
 }
 

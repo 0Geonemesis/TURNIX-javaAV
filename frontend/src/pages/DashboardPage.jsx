@@ -78,6 +78,19 @@ export default function DashboardPage() {
 
       {message && <div className="alert alert-warning">{message}</div>}
 
+      <section className="flow-card">
+        <div>
+          <span>{permissions.label}</span>
+          <h2>{permissions.flowTitle}</h2>
+          <p>Este bloque aclara que acciones principales debe seguir este tipo de usuario dentro de TURN0.</p>
+        </div>
+        <ol>
+          {permissions.flowSteps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+      </section>
+
       <AppointmentCountdown appointments={monthlyAppointments} title={permissions.canManage ? "Proxima cita agendada" : "Tu proxima cita"} />
 
       <section className="row g-3">

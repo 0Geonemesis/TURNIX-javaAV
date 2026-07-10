@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documentacion TURN0 - Correo, Registro y Flujos</title>
+    <style>
+      :root {
+        --bg: #eef5f4;
+        --paper: #ffffff;
+        --ink: #17202a;
+        --soft: #64748b;
+        --line: #d8e4e1;
+        --green: #0f766e;
+        --green-dark: #115e59;
+        --amber: #f59e0b;
+        --blue: #2563eb;
+        --red: #dc2626;
+        --code-bg: #0f172a;
+        --code-text: #e2e8f0;
+        --purple: #c084fc;
+        --cyan: #67e8f9;
+        --yellow: #fde68a;
+        --orange: #fdba74;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.6;
+      }
+
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 32px 18px 60px;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, var(--green), var(--green-dark));
+        color: #ffffff;
+        border-radius: 16px;
+        padding: 34px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+      }
+
+      .hero small {
+        display: inline-block;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #ccfbf1;
+      }
+
+      .hero h1 {
+        margin: 10px 0 8px;
+        font-size: 34px;
+        line-height: 1.1;
+      }
+
+      .hero p {
+        margin: 0;
+        color: #e0f2f1;
+        font-size: 17px;
+      }
+
+      .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 24px;
+        margin-top: 22px;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 24px;
+        color: var(--green-dark);
+      }
+
+      h3 {
+        margin: 22px 0 8px;
+        font-size: 18px;
+      }
+
+      .note {
+        border-left: 5px solid var(--amber);
+        background: #fffbeb;
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin: 14px 0;
+      }
+
+      .ok {
+        border-left: 5px solid var(--green);
+        background: #ecfdf5;
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin: 14px 0;
+      }
+
+      .danger {
+        border-left: 5px solid var(--red);
+        background: #fef2f2;
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin: 14px 0;
+      }
+
+      .path {
+        display: inline-block;
+        background: #eef2ff;
+        color: #3730a3;
+        border: 1px solid #c7d2fe;
+        border-radius: 8px;
+        padding: 3px 8px;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 14px;
+      }
+
+      .flow {
+        display: grid;
+        gap: 10px;
+        margin: 16px 0;
+      }
+
+      .flow div {
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-weight: 700;
+      }
+
+      .flow div::before {
+        content: "-> ";
+        color: var(--green);
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0;
+      }
+
+      .pill {
+        background: #ecfdf5;
+        border: 1px solid #99f6e4;
+        color: #134e4a;
+        border-radius: 999px;
+        padding: 7px 11px;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      pre {
+        background: var(--code-bg);
+        color: var(--code-text);
+        border-radius: 14px;
+        overflow-x: auto;
+        padding: 18px;
+        border: 1px solid #1e293b;
+      }
+
+      code {
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 14px;
+      }
+
+      .kw {
+        color: var(--purple);
+        font-weight: 800;
+      }
+
+      .fn {
+        color: var(--cyan);
+        font-weight: 800;
+      }
+
+      .str {
+        color: var(--yellow);
+      }
+
+      .num {
+        color: var(--orange);
+      }
+
+      .com {
+        color: #94a3b8;
+        font-style: italic;
+      }
+
+      .var {
+        color: #93c5fd;
+        font-weight: 700;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        padding: 10px;
+        vertical-align: top;
+      }
+
+      th {
+        background: #f8fafc;
+        color: var(--green-dark);
+      }
+
+      .section-label {
+        color: var(--soft);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+        }
+
+        .card,
+        .hero {
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <small>TURN0 - Documentacion para exponer</small>
+        <h1>Correo de bienvenida, registro y flujos por usuario</h1>
+        <p>
+          Esta guia explica lo trabajado hoy: el envio automatico de correo al registrarse,
+          el problema con Hotmail/prueba, como se corrigio, y como intervienen los roles
+          administrador, vendedor/negocio y cliente dentro del sistema.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="section-label">1. Resumen simple</div>
+        <h2>Que se queria lograr</h2>
+        <p>
+          Se queria que cuando una persona se registre desde la pagina visual de TURN0,
+          el sistema tome el correo escrito en el formulario y envie automaticamente un
+          mensaje de bienvenida a ese mismo correo.
+        </p>
+
+        <div class="ok">
+          <strong>Estado final:</strong> el registro desde la interfaz crea el usuario y
+          manda el correo de bienvenida al correo que la persona escribio en el formulario.
+        </div>
+
+        <div class="note">
+          <strong>Importante:</strong> antes existia una variable llamada
+          <span class="path">WELCOME_TEST_EMAIL</span>. Esa variable hacia que todos los
+          correos de prueba llegaran a un solo correo fijo, por ejemplo Hotmail. Eso servia
+          para pruebas, pero no era lo que se queria para el registro real. Por eso se cambio
+          para que el registro use directamente <strong>user.email</strong>.
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-label">2. Flujo del correo</div>
+        <h2>Que pasa cuando un usuario presiona Registrarse</h2>
+        <p>
+          Este es el recorrido completo desde la pagina hasta el correo:
+        </p>
+
+        <div class="flow">
+          <div>El usuario entra a la pagina de registro.</div>
+          <div>Escribe nombre, correo, contrasena y tipo de usuario.</div>
+          <div>Presiona el boton Registrarse.</div>
+          <div>React captura el evento del formulario.</div>
+          <div>React llama a la API con Axios.</div>
+          <div>Express recibe la ruta /api/auth/register.</div>
+          <div>El backend crea o recupera el usuario.</div>
+          <div>El backend llama al servicio de correo.</div>
+          <div>Nodemailer envia el mensaje al correo escrito por el usuario.</div>
+          <div>La pagina muestra si el correo fue enviado o si hubo advertencia.</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-label">3. Frontend</div>
+        <h2>Donde esta el formulario de registro</h2>
+        <p>
+          El formulario visual esta en:
+        </p>
+        <p><span class="path">frontend/src/pages/RegisterPage.jsx</span></p>
+
+        <h3>Funcion principal del registro</h3>
+        <p>
+          Esta funcion se ejecuta cuando el usuario presiona el boton
+          <strong>Registrarse</strong>.
+        </p>
+
+        <pre><code><span class="kw">async function</span> <span class="fn">handleSubmit</span>(<span class="var">event</span>) {
+  <span class="var">event</span>.<span class="fn">preventDefault</span>();
+  <span class="fn">setMessage</span>(<span class="str">""</span>);
+
+  <span class="kw">if</span> (!<span class="var">form</span>.fullName || !<span class="var">form</span>.email || !<span class="var">form</span>.password || !<span class="var">form</span>.confirmPassword || !<span class="var">form</span>.role) {
+    <span class="fn">setMessageType</span>(<span class="str">"text-danger"</span>);
+    <span class="fn">setMessage</span>(<span class="str">"Completa todos los campos."</span>);
+    <span class="kw">return</span>;
+  }
+
+  <span class="kw">const</span> <span class="var">response</span> = <span class="kw">await</span> <span class="fn">registerUser</span>({
+    fullName: <span class="var">form</span>.fullName,
+    email: <span class="var">form</span>.email,
+    password: <span class="var">form</span>.password,
+    role: <span class="var">form</span>.role
+  });
+}</code></pre>
+
+        <h3>Explicacion para exponer</h3>
+        <p>
+          Esta funcion primero evita que el navegador recargue la pagina. Luego valida que
+          los campos no esten vacios. Si todo esta bien, manda los datos al backend usando
+          la funcion <span class="path">registerUser</span>.
+        </p>
+
+        <h3>Donde se llama a la API desde el frontend</h3>
+        <p><span class="path">frontend/src/api/authService.js</span></p>
+
+        <pre><code><span class="kw">export function</span> <span class="fn">registerUser</span>(<span class="var">payload</span>) {
+  <span class="kw">return</span> <span class="var">apiClient</span>.<span class="fn">post</span>(<span class="str">"/auth/register"</span>, <span class="var">payload</span>);
+}</code></pre>
+
+        <p>
+          Aqui se envia la informacion del formulario hacia el backend. La ruta completa
+          termina siendo:
+        </p>
+
+        <p><span class="path">http://localhost:4000/api/auth/register</span></p>
+
+        <h3>Donde esta configurado Axios</h3>
+        <p><span class="path">frontend/src/api/apiClient.js</span></p>
+
+        <pre><code><span class="kw">export const</span> <span class="var">apiClient</span> = <span class="fn">axios.create</span>({
+  baseURL: <span class="var">import.meta.env</span>.VITE_API_URL || <span class="str">"http://localhost:4000/api"</span>,
+  headers: {
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>
+  }
+});</code></pre>
+
+        <p>
+          Axios es el puente entre React y Express. React no habla directamente con MySQL;
+          primero llama al backend por medio de Axios.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="section-label">4. Backend</div>
+        <h2>Donde llega la peticion de registro</h2>
+        <p>
+          La ruta del backend esta en:
+        </p>
+        <p><span class="path">backend/src/routes/auth.routes.js</span></p>
+
+        <pre><code><span class="var">router</span>.<span class="fn">post</span>(<span class="str">"/register"</span>, <span class="var">register</span>);</code></pre>
+
+        <p>
+          Esto significa que cuando el frontend llama a
+          <span class="path">/api/auth/register</span>, Express ejecuta la funcion
+          <span class="path">register</span>.
+        </p>
+
+        <h3>Controlador del registro</h3>
+        <p><span class="path">backend/src/controllers/auth.controller.js</span></p>
+
+        <pre><code><span class="kw">export async function</span> <span class="fn">register</span>(<span class="var">req</span>, <span class="var">res</span>, <span class="var">next</span>) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">user</span> = <span class="kw">await</span> <span class="fn">registerUser</span>(<span class="var">req</span>.body);
+    <span class="kw">let</span> <span class="var">welcomeEmail</span> = { sent: <span class="kw">false</span>, reason: <span class="str">"NOT_ATTEMPTED"</span> };
+
+    <span class="kw">try</span> {
+      <span class="var">welcomeEmail</span> = <span class="kw">await</span> <span class="fn">sendWelcomeEmail</span>(<span class="var">user</span>);
+    } <span class="kw">catch</span> (<span class="var">mailError</span>) {
+      <span class="var">welcomeEmail</span> = { sent: <span class="kw">false</span>, reason: <span class="str">"MAIL_SEND_FAILED"</span> };
+    }
+
+    <span class="var">res</span>.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>({
+      message: <span class="var">user</span>.alreadyRegistered
+        ? <span class="str">"El usuario ya existia. Se reenvio el correo de bienvenida."</span>
+        : <span class="str">"Usuario registrado correctamente"</span>,
+      user,
+      welcomeEmail
+    });
+  } <span class="kw">catch</span> (<span class="var">error</span>) {
+    <span class="fn">next</span>(<span class="var">error</span>);
+  }
+}</code></pre>
+
+        <h3>Explicacion para exponer</h3>
+        <p>
+          El controlador primero registra el usuario. Luego intenta enviar el correo. Si el
+          correo falla, el sistema no rompe el registro; solo devuelve una advertencia. Esto
+          es importante porque no queremos que una falla de correo impida crear la cuenta.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="section-label">5. Registro o reenvio</div>
+        <h2>Que pasa si el usuario ya existe</h2>
+        <p>
+          Se pidio que si el usuario ya estaba registrado, igual se pudiera enviar el correo
+          otra vez. Esa logica esta en:
+        </p>
+        <p><span class="path">backend/src/services/auth.service.js</span></p>
+
+        <pre><code><span class="kw">const</span> [<span class="var">existingUsers</span>] = <span class="kw">await</span> <span class="var">pool</span>.<span class="fn">query</span>(
+  <span class="str">"SELECT id, full_name, email, role FROM users WHERE email = ?"</span>,
+  [<span class="var">normalizedEmail</span>]
+);
+
+<span class="kw">if</span> (<span class="var">existingUsers</span>.length &gt; <span class="num">0</span>) {
+  <span class="kw">const</span> <span class="var">existingUser</span> = <span class="var">existingUsers</span>[<span class="num">0</span>];
+  <span class="kw">return</span> {
+    id: <span class="var">existingUser</span>.id,
+    fullName: <span class="var">existingUser</span>.full_name,
+    email: <span class="var">existingUser</span>.email,
+    role: <span class="var">existingUser</span>.role,
+    alreadyRegistered: <span class="kw">true</span>
+  };
+}</code></pre>
+
+        <p>
+          Antes, si el correo ya existia, el backend devolvia error. Ahora no crea duplicado,
+          sino que recupera el usuario existente y permite reenviar el correo de bienvenida.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="section-label">6. Servicio de correo</div>
+        <h2>Donde se envia el correo</h2>
+        <p>
+          El servicio de correo esta en:
+        </p>
+        <p><span class="path">backend/src/services/mail.service.js</span></p>
+
+        <h3>Linea mas importante</h3>
+        <pre><code><span class="kw">const</span> <span class="var">recipient</span> = <span class="var">user</span>.email;</code></pre>
+
+        <p>
+          Esta linea es clave. Significa que el correo de bienvenida se envia al correo que
+          el usuario escribio en la interfaz, no a un correo fijo del archivo .env.
+        </p>
+
+        <h3>Configuracion de Nodemailer</h3>
+        <pre><code><span class="kw">const</span> <span class="var">transporter</span> = <span class="var">nodemailer</span>.<span class="fn">createTransport</span>({
+  host: <span class="var">env</span>.mail.host,
+  port: <span class="var">env</span>.mail.port,
+  secure: <span class="var">env</span>.mail.port === <span class="num">465</span>,
+  auth: {
+    user: <span class="var">env</span>.mail.user,
+    pass: <span class="var">env</span>.mail.pass
+  }
+});</code></pre>
+
+        <p>
+          Nodemailer usa los datos SMTP para conectarse al correo emisor. En este caso, el
+          emisor configurado puede ser Gmail.
+        </p>
+
+        <h3>Envio real del correo</h3>
+        <pre><code><span class="kw">await</span> <span class="var">transporter</span>.<span class="fn">sendMail</span>({
+  from,
+  to: <span class="var">recipient</span>,
+  subject,
+  html
+});</code></pre>
+
+        <p>
+          Aqui se manda el correo real. El campo <span class="path">to</span> recibe el
+          correo del usuario registrado.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="section-label">7. Plantilla HTML del correo</div>
+        <h2>Como esta estilizado el mensaje de bienvenida</h2>
+        <p>
+          La plantilla tambien esta en:
+        </p>
+        <p><span class="path">backend/src/services/mail.service.js</span></p>
+
+        <pre><code><span class="kw">function</span> <span class="fn">buildWelcomeTemplate</span>(<span class="var">user</span>) {
+  <span class="kw">const</span> <span class="var">roleName</span> = <span class="var">user</span>.role === <span class="str">"dueno_negocio"</span>
+    ? <span class="str">"vendedor / negocio"</span>
+    : <span class="str">"cliente"</span>;
+
+  <span class="kw">return</span> <span class="str">`
+    &lt;h1&gt;Bienvenido, ${escapeHtml(user.fullName)}&lt;/h1&gt;
+    &lt;p&gt;Tu cuenta como ${roleName} fue creada correctamente.&lt;/p&gt;
+    &lt;h2&gt;Nuestros planes para TURN0&lt;/h2&gt;
+  `</span>;
+}</code></pre>
+
+        <p>
+          Esta plantilla tiene diseno con colores, titulo, mensaje de bienvenida, planes de
+          la empresa y un boton para entrar a TURN0.
+        </p>
+
+        <div class="ok">
+          <strong>Contenido del mensaje:</strong> agradece al usuario, explica que puede hacer
+          en TURN0, menciona los planes de la empresa y ofrece un boton para entrar al sistema.
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-label">8. Variables de correo</div>
+        <h2>Donde se configura el correo emisor</h2>
+        <p>
+          Las credenciales se colocan en:
+        </p>
+        <p><span class="path">backend/.env</span></p>
+
+        <pre><code>SMTP_HOST=<span class="str">smtp.gmail.com</span>
+SMTP_PORT=<span class="num">587</span>
+SMTP_USER=<span class="str">tu_correo@gmail.com</span>
+SMTP_PASS=<span class="str">clave_de_aplicacion</span>
+SMTP_FROM=<span class="str">"TURN0 &lt;tu_correo@gmail.com&gt;"</span>
+WELCOME_TEST_EMAIL=</code></pre>
+
+        <div class="danger">
+          <strong>Importante:</strong> para Gmail no se usa la contrasena normal. Se usa una
+          clave de aplicacion generada desde la cuenta de Google.
+        </div>
+
+        <p>
+          En el registro real, <span class="path">WELCOME_TEST_EMAIL</span> ya no controla el
+          destinatario. El destinatario es el correo escrito en el formulario.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="section-label">9. Prueba manual vs registro real</div>
+        <h2>Diferencia entre test:mail y registro desde la pagina</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Accion</th>
+              <th>Como funciona</th>
+              <th>Para que sirve</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Registro desde la pagina</strong></td>
+              <td>Toma el correo escrito por el usuario en la interfaz.</td>
+              <td>Uso real de la aplicacion.</td>
+            </tr>
+            <tr>
+              <td><strong>npm run test:mail</strong></td>
+              <td>Usa WELCOME_TEST_EMAIL o SMTP_USER para probar el envio.</td>
+              <td>Probar si SMTP funciona sin registrar usuarios.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Comando de prueba manual</h3>
+        <pre><code><span class="com"># Desde la carpeta backend</span>
+npm run test:mail</code></pre>
+      </section>
+
+      <section class="card">
+        <div class="section-label">10. Flujos por rol</div>
+        <h2>Como interviene cada tipo de usuario</h2>
+
+        <h3>Administrador</h3>
+        <div class="pill-row">
+          <span class="pill">Supervisa clientes</span>
+          <span class="pill">Supervisa citas</span>
+          <span class="pill">Supervisa turnos</span>
+          <span class="pill">Revisa reportes</span>
+          <span class="pill">Descarga PDF</span>
+        </div>
+        <p>
+          El administrador tiene una vista completa. Puede revisar la operacion general,
+          validar el dashboard, mirar reportes y controlar la informacion principal del sistema.
+        </p>
+
+        <h3>Vendedor / negocio</h3>
+        <div class="pill-row">
+          <span class="pill">Registra clientes</span>
+          <span class="pill">Agenda citas</span>
+          <span class="pill">Gestiona turnos</span>
+          <span class="pill">Consulta reportes</span>
+        </div>
+        <p>
+          El vendedor o dueno de negocio usa TURN0 como herramienta diaria. Su flujo principal
+          es crear clientes, organizar citas, atender turnos y revisar como va el negocio.
+        </p>
+
+        <h3>Cliente</h3>
+        <div class="pill-row">
+          <span class="pill">Se registra</span>
+          <span class="pill">Recibe correo</span>
+          <span class="pill">Crea cita</span>
+          <span class="pill">Ve cronometro</span>
+        </div>
+        <p>
+          El cliente entra al sistema para gestionar sus citas. Despues de registrarse recibe
+          el correo de bienvenida. Luego puede consultar sus citas y ver cuanto falta para su
+          proxima atencion.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="section-label">11. Como exponerlo</div>
+        <h2>Guion breve para explicar</h2>
+        <p>
+          Puedes decirlo de esta manera:
+        </p>
+        <div class="note">
+          En TURN0, cuando un usuario se registra desde la interfaz, React captura los datos
+          del formulario y los envia al backend usando Axios. El backend recibe la ruta de
+          registro, crea o recupera el usuario en MySQL y luego llama a un servicio de correo.
+          Ese servicio usa Nodemailer para enviar una plantilla HTML de bienvenida al correo
+          que el usuario escribio en la pagina. Si el usuario ya existia, no se duplica; se
+          reutiliza su informacion y se reenvia el correo de bienvenida.
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

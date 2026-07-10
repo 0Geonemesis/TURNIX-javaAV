@@ -19,10 +19,17 @@ export async function registerUser({ fullName, email, password, role }) {
   }
 
   const normalizedEmail = email.trim().toLowerCase();
-  const [existingUsers] = await pool.query("SELECT id FROM users WHERE email = ?", [normalizedEmail]);
+  const [existingUsers] = await pool.query("SELECT id, full_name, email, role FROM users WHERE email = ?", [normalizedEmail]);
 
   if (existingUsers.length > 0) {
-    throw httpError(409, "El usuario ya existe");
+    const existingUser = existingUsers[0];
+    return {
+      id: existingUser.id,
+      fullName: existingUser.full_name,
+      email: existingUser.email,
+      role: existingUser.role,
+      alreadyRegistered: true
+    };
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
@@ -35,7 +42,8 @@ export async function registerUser({ fullName, email, password, role }) {
     id: result.insertId,
     fullName: fullName.trim(),
     email: normalizedEmail,
-    role
+    role,
+    alreadyRegistered: false
   };
 }
 

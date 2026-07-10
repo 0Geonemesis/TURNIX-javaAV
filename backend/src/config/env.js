@@ -17,5 +17,13 @@ export const env = {
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "",
     database: process.env.DB_NAME || "turn0_db"
+  },
+  mail: {
+    host: process.env.SMTP_HOST || "",
+    port: Number(process.env.SMTP_PORT || 587),
+    user: process.env.SMTP_USER || "",
+    pass: process.env.SMTP_PASS || "",
+    from: process.env.SMTP_FROM || "TURN0 <no-reply@turn0.com>",
+    welcomeTestEmail: process.env.WELCOME_TEST_EMAIL || ""
   }
 };

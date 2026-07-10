@@ -28,19 +28,40 @@ export function getRolePermissions(role) {
       label: "Administrador",
       tabs: ["clientes", "citas", "turnos", "reportes"],
       canManage: true,
-      canViewReports: true
+      canViewReports: true,
+      flowTitle: "Flujo administrador",
+      flowSteps: [
+        "Revisar el dashboard general",
+        "Supervisar clientes, citas y turnos",
+        "Validar reportes y descargar PDF",
+        "Controlar errores operativos y datos duplicados"
+      ]
     },
     dueno_negocio: {
-      label: "Dueno de negocio",
+      label: "Vendedor / negocio",
       tabs: ["clientes", "citas", "turnos", "reportes"],
       canManage: true,
-      canViewReports: true
+      canViewReports: true,
+      flowTitle: "Flujo vendedor / negocio",
+      flowSteps: [
+        "Registrar clientes",
+        "Agendar citas",
+        "Gestionar turnos de atencion",
+        "Revisar reportes del negocio"
+      ]
     },
     cliente: {
       label: "Cliente",
       tabs: ["citas"],
       canManage: false,
-      canViewReports: false
+      canViewReports: false,
+      flowTitle: "Flujo cliente",
+      flowSteps: [
+        "Ingresar al sistema",
+        "Crear o revisar sus citas",
+        "Ver el cronometro de su proxima cita",
+        "Consultar el estado de sus reservas"
+      ]
     }
   };
 
